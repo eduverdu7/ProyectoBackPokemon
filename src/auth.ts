@@ -6,7 +6,7 @@ import { COLLECTION_TRAINERS } from "./utils";
 
 dotenv.config();
 
-const SECRET = process.env.SUPER_SECRET!;
+const SECRET = process.env.SECRET!;
 
 export const signToken = (userId: string) =>
   jwt.sign({ userId }, SECRET, { expiresIn: "1h" });
