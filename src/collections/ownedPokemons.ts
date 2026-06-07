@@ -1,3 +1,4 @@
+// Eduardo Verdu
 import { ObjectId } from "mongodb";
 import { getDB } from "../db/mongo";
 import { COLLECTION_OWNED, COLLECTION_TRAINERS, COLLECTION_POKEMONS} from "../utils";

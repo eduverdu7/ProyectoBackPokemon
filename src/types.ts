@@ -1,3 +1,4 @@
+// Eduardo Verdu
 import { ObjectId } from "mongodb";
 
 export interface Trainer {

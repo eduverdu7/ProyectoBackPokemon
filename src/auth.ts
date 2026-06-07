@@ -1,3 +1,4 @@
+// Eduardo Verdu
 import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { getDB } from "./db/mongo";

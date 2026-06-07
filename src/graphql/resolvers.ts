@@ -1,3 +1,4 @@
+// Eduardo Verdu
 import { IResolvers } from "@graphql-tools/utils";
 import { getPokemons, getPokemonById, createPokemon } from "../collections/pokemons";
 import { startJourney, loginTrainer } from "../collections/trainers";
