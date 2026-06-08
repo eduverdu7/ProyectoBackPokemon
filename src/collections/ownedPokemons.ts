@@ -10,8 +10,7 @@ export const catchPokemon = async (
     nickname?: string) => {
     if (!trainer) throw new Error("No autenticado");
     const db = getDB();
-    // const pokemon = await db.collection<Pokemon>(POKEMONS_COLLECTION).findOne({ _id: new ObjectId(pokemonId) });
-    // if (!pokemon) throw new Error("Pokemon no existe");  no necesario, hecho para comprobar si entraba correctamente el id del POKE
+    
     const trainerBase = await db.collection<Trainer>(TRAINER_COLLECTION).findOne({ _id: trainer._id });
     if (!trainerBase) throw new Error("Entrenador no encontrado");
 

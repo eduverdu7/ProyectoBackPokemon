@@ -1,8 +1,9 @@
+//Eduardo Verdu
 import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { getDB } from "./db/mongo";
 import { ObjectId } from "mongodb";
-import { TRAINER_COLLECTION } from "./utils"; // ✅ nombre correcto
+import { TRAINER_COLLECTION } from "./utils"; 
 
 dotenv.config();
 

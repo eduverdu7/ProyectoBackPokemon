@@ -1,3 +1,4 @@
+//Eduardo Verdu
 import { IResolvers } from "@graphql-tools/utils"
 import { createUser, validateUser } from "../collections/trainers"
 import { signToken } from "../auth"
@@ -10,7 +11,7 @@ import { catchPokemon, freePokemon } from "../collections/ownedPokemons"
 
 export const resolvers: IResolvers = {
     Query: {
-        me: async (_, __, { user }) => { // ✅ "user" en lugar de "trainer"
+        me: async (_, __, { user }) => { 
             if (!user) return null;
             return user;
         },
