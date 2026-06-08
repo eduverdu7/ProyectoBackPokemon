@@ -16,7 +16,7 @@ export const getUserFromToken = async (token: string) => {
   try {
     const payload = jwt.verify(token, SECRET) as { userId: string };
     return getDB()
-      .collection(TRAINER_COLLECTION) // ✅ nombre correcto
+      .collection(TRAINER_COLLECTION) 
       .findOne({ _id: new ObjectId(payload.userId) });
   } catch {
     return null;
