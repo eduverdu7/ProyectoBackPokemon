@@ -1,32 +1,31 @@
 // Eduardo Verdu
-import { ObjectId } from "mongodb";
+import { getDB } from "../db/mongo"
 import bcrypt from "bcryptjs";
-import { getDB } from "../db/mongo";
+import { TRAINER_COLLECTION } from "../utils";
+import { ObjectId } from "mongodb";
 
-export const startJourney = async (name: string, password: string) => {
-  const db = getDB();
+export const createUser = async(name:string,password:string)=>{
+    const db = getDB();
+    const passEncripta = await bcrypt.hash(password,10);
+    const yaExiste= await db.collection(TRAINER_COLLECTION).findOne({name:name})
+    if(yaExiste) throw new Error("El entrenador ya existe con ese nombre");
+    const result = await db.collection(TRAINER_COLLECTION).insertOne({
+        name,
+        password: passEncripta,
+        pokemons:[]
+    });
+    return result.insertedId.toString()
 
-  if (await db.collection("trainers").findOne({ name }))
-    throw new Error("Trainer already exists");
-
-  const hash = await bcrypt.hash(password, 10);
-
-  const res = await db.collection("trainers").insertOne({
-    name,
-    password: hash,
-    pokemons: []
-  });
-
-  return res.insertedId.toString();
-};
-
-export const loginTrainer = async (name: string, password: string) => {
-  const db = getDB();
-  const trainer = await db.collection("trainers").findOne({ name });
-  if (!trainer) return null;
-
-  const ok = await bcrypt.compare(password, trainer.password);
-  if (!ok) return null;
-
-  return trainer;
-};
+}
+export const validateUser =async (name:string, password:string) =>{
+    const db = getDB();
+    const user = await db.collection(TRAINER_COLLECTION).findOne({name});
+    if(!user)return null;
+    const comparamosContraseñas = await bcrypt.compare(password,user.password);
+    if(!comparamosContraseñas)return null; 
+    return user; 
+}
+export const findUserById = async (id:string) => {
+    const db = getDB();
+    return await db.collection(TRAINER_COLLECTION).findOne({_id:new ObjectId(id)});
+}

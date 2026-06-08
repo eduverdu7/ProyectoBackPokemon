@@ -1,9 +1,8 @@
-// Eduardo Verdu
 import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { getDB } from "./db/mongo";
 import { ObjectId } from "mongodb";
-import { COLLECTION_TRAINERS } from "./utils";
+import { TRAINER_COLLECTION } from "./utils"; // ✅ nombre correcto
 
 dotenv.config();
 
@@ -16,7 +15,7 @@ export const getUserFromToken = async (token: string) => {
   try {
     const payload = jwt.verify(token, SECRET) as { userId: string };
     return getDB()
-      .collection(COLLECTION_TRAINERS)
+      .collection(TRAINER_COLLECTION) // ✅ nombre correcto
       .findOne({ _id: new ObjectId(payload.userId) });
   } catch {
     return null;

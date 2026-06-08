@@ -1,75 +1,59 @@
-// Eduardo Verdu
-import { IResolvers } from "@graphql-tools/utils";
-import { getPokemons, getPokemonById, createPokemon } from "../collections/pokemons";
-import { startJourney, loginTrainer } from "../collections/trainers";
-import { catchPokemon, freePokemon } from "../collections/ownedPokemons";
-import { signToken } from "../auth";
-import { getDB } from "../db/mongo";
-import { ObjectId } from "mongodb";
-import { COLLECTION_OWNED, COLLECTION_POKEMONS } from "../utils";
- 
+import { IResolvers } from "@graphql-tools/utils"
+import { createUser, validateUser } from "../collections/trainers"
+import { signToken } from "../auth"
+import { ObjectId } from "mongodb"
+import { getDB } from "../db/mongo"
+import { Trainer } from "../types"
+import { pokemons, pokemonById, createPokemon } from "../collections/pokemons"
+import { OWNEDPOKE_COLLECTION, POKEMONS_COLLECTION } from "../utils"
+import { catchPokemon, freePokemon } from "../collections/ownedPokemons"
+
 export const resolvers: IResolvers = {
-  Query: {
-    me: (_: any, __: any, { user }: any) => user ?? null,
- 
-    pokemons: (_: any, { page, size }: any) =>
-      getPokemons(page, size),
- 
-    pokemon: (_: any, { id }: any) =>
-      getPokemonById(id)
-  },
-  
-  Mutation: {
-    startJourney: async (_: any, { name, password }: any) =>
-      signToken(await startJourney(name, password)),
- 
-    login: async (_: any, { name, password }: any) => {
-      const trainer = await loginTrainer(name, password);
-      if (!trainer) throw new Error("Invalid credentials");
-      return signToken(trainer._id.toString());
+    Query: {
+        me: async (_, __, { user }) => { // ✅ "user" en lugar de "trainer"
+            if (!user) return null;
+            return user;
+        },
+        pokemons: async (_, { page, size }) => {
+            return await pokemons(page, size);
+        },
+        pokemon: async (_, { id }) => {
+            return await pokemonById(id);
+        }
     },
- 
-    createPokemon: async (_: any, args: any, { user }: any) => {
-      if (!user) throw new Error("Not authenticated");
-      return createPokemon(
-        args.name,
-        args.description,
-        args.height,
-        args.weight,
-        args.types
-      );
+
+    Trainer: {
+        pokemons: async (parent) => {
+            const db = getDB();
+            return db.collection(OWNEDPOKE_COLLECTION).find({ _id: { $in: parent.pokemons || [] } }).toArray();
+        }
     },
- 
-    catchPokemon: async (_: any, { pokemonId, nickname }: any, { user }: any) => {
-      if (!user) throw new Error("Not authenticated");
-      return catchPokemon(pokemonId, nickname, user._id.toString());
+
+    OwnedPokemon: {
+        pokemon: async (parent) => {
+            const db = getDB();
+            return await db.collection(POKEMONS_COLLECTION).findOne({ _id: parent.pokemon });
+        }
     },
- 
-    freePokemon: async (_: any, { ownedPokemonId }: any, { user }: any) => {
-      if (!user) throw new Error("Not authenticated");
-      return freePokemon(ownedPokemonId, user._id.toString());
+
+    Mutation: {
+        startJourney: async (_, { name, password }) => {
+            const idDeClienteCreado = await createUser(name, password);
+            return signToken(idDeClienteCreado);
+        },
+        login: async (_, { name, password }) => {
+            const user = await validateUser(name, password);
+            if (!user) throw new Error("Bad credentials");
+            return signToken(user._id.toString());
+        },
+        createPokemon: async (_, { name, description, height, weight, types }, { user }) => { 
+            return await createPokemon(user, name, description, height, weight, types);
+        },
+        catchPokemon: async (_, { pokemonId, nickname }, { user }) => { 
+            return await catchPokemon(user, pokemonId, nickname);
+        },
+        freePokemon: async (_, { ownedPokemonId }, { user }) => { 
+            return await freePokemon(user, ownedPokemonId);
+        }
     }
-  },
- 
-  Trainer: {
-    pokemons: async (parent: any) => {
-      if (!parent.pokemons || parent.pokemons.length === 0) return [];
-      const db = getDB();
-      const ids = parent.pokemons.map((id: string) => new ObjectId(id));
-      return db
-        .collection(COLLECTION_OWNED)
-        .find({ _id: { $in: ids } })
-        .toArray();
-    }
-  },
- 
-  OwnedPokemon: {
-    // El campo en BD se llama 'pokemon' (guardado como string del id)
-    pokemon: async (parent: any) => {
-      const db = getDB();
-      return db
-        .collection(COLLECTION_POKEMONS)
-        .findOne({ _id: new ObjectId(parent.pokemon) });
-    }
-  }
-};
+}

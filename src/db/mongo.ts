@@ -15,7 +15,7 @@ export const connectToMongoDB = async () => {
   await client.connect();
   db = client.db();
 
-  console.log("Estás conectado al mondongo cosa guapa!");
+  console.log("Estás conectado al mongo");
 };
 
 export const getDB = (): Db => db;
