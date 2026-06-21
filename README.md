@@ -1,4 +1,4 @@
-Desarrollo de una API GraphQL – Pokémon
+## Desarrollo de una API GraphQL – Pokémon
 Contexto: 
 Desarrollo de una API GraphQL para gestionar un pequeño sistema de Pokémon, entrenadores y capturas.
 La API permitirá a los entrenadores iniciar su aventura, autenticarse, consultar Pokémon disponibles y gestionar los Pokémon que han capturado.
