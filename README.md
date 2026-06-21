@@ -1,10 +1,10 @@
 Desarrollo de una API GraphQL – Pokémon
-Contexto
-Se desea desarrollar una API GraphQL para gestionar un pequeño sistema de Pokémon, entrenadores y capturas.
+Contexto: 
+Desarrollo de una API GraphQL para gestionar un pequeño sistema de Pokémon, entrenadores y capturas.
 La API permitirá a los entrenadores iniciar su aventura, autenticarse, consultar Pokémon disponibles y gestionar los Pokémon que han capturado.
 Para ello, se proporciona el siguiente esquema GraphQL, que deberá ser implementado utilizando Apollo Server y Node.js.
 
-Esquema proporcionado
+Esquema: 
 enum PokemonType {
  NORMAL
  FIRE
@@ -67,10 +67,12 @@ type Query {
  pokemons(page: Int, size: Int): [Pokemon]!
  pokemon(id: ID!): Pokemon
 }
+
 Objetivos
 Implementar una API GraphQL completamente funcional que cumpla con el esquema anterior,
 incluyendo resolvers, autenticación y gestión de datos.
 Requisitos funcionales
+
 1. Autenticación
 • startJourney:
 ◦ Crea un nuevo entrenador con nombre y contraseña.
@@ -81,7 +83,8 @@ Requisitos funcionales
 ◦ Autentica a un entrenador existente.
 ◦ Devuelve un token si las credenciales son correctas.
 ◦ En caso contrario, lanza un error.
-2. Pokémon
+
+3. Pokémon
 • createPokemon: (Con autenticación)
 ◦ Crea un nuevo Pokémon en el sistema.
 ◦ Los tipos deben pertenecer al enum PokemonType.
@@ -93,7 +96,8 @@ existentes en caso de ser menos.
 • pokemon:
 ◦ Devuelve un Pokémon concreto por su ID.
 ◦ Si no existe, devuelve null.
-3. Captura y gestión de Pokémon
+
+5. Captura y gestión de Pokémon
 • catchPokemon: (Con autenticación)
 ◦ Permite al entrenador autenticado capturar un Pokémon existente.
 ◦ Se genera un nuevo OwnedPokemon con estadísticas (attack, defense, speed, special,
@@ -108,22 +112,12 @@ puede tener 6 pokemons en su equipo. Si intenta capturar mas devolverá error.
 ◦ Devuelve el entrenador actualizado sin dicho pokemon en su equipo. Se deberán de
 borrar los datos de dicho pokemon en su completitud además de eliminarlo del equipo de
 su entrenador.
-4. Consulta del entrenador
+
+6. Consulta del entrenador
 • me: (Con autenticación)
 ◦ Devuelve la información del entrenador autenticado.
 ◦ Incluye todos los Pokémon capturados.
 ◦ Si no hay usuario autenticado, devuelve null.
 ◦ Tener en cuenta que en base de datos el equipo solo será un array de id’s relacionados
 con objetos OwnedPokemon.
-Requisitos técnicos
-• Uso de Node.js y Apollo Server
-• Implementación correcta de resolvers
-• Manejo de errores GraphQL
-• Implementación y uso de encadenados según lo pide el esquema (indicado con comentarios para
-mayor claridad)
-• Control de acceso mediante autenticación
-• Persistencia de datos (mongodb). Se recomiendo crear tres colecciones, entrenadores, pokemons
-y ownedPokemons
-• Código limpio, modular y correctamente estructurado
-• En la entrega se deberá mandar única y exclusivamente el enlace al repositorio de github y las
-variables de entorno necesarias para la ejecución del código.
+
